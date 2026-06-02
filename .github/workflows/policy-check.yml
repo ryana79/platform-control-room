@@ -1,0 +1,15 @@
+name: policy-check
+on: [push, pull_request]
+jobs:
+  conftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Conftest
+        run: |
+          curl -L https://github.com/open-policy-agent/conftest/releases/download/v0.56.0/conftest_0.56.0_Linux_x86_64.tar.gz -o conftest.tar.gz
+          tar -xzf conftest.tar.gz
+          sudo mv conftest /usr/local/bin/conftest
+          conftest --version
+      - run: conftest test policy/conftest/examples/good-workload.yaml --policy policy/conftest --namespace azureplatform.workload
+      - run: '! conftest test policy/conftest/examples/bad-workload.yaml --policy policy/conftest --namespace azureplatform.workload'

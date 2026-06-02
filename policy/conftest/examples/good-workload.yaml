@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: good-api
+  labels:
+    owner: platform
+    environment: dev
+    cost-center: cc-demo
+spec:
+  template:
+    spec:
+      containers:
+        - name: app
+          image: nginx
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi

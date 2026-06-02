@@ -1,0 +1,14 @@
+workload_name       = "sample-api"
+environment         = "prod"
+location            = "eastus"
+owner               = "platform"
+cost_center         = "cc-demo"
+data_classification = "internal"
+public_access       = false
+enabled_services    = ["AKS", "ACR", "Log Analytics"]
+aks_node_count      = 1
+tags = {
+  owner       = "platform"
+  environment = "prod"
+  cost_center = "cc-demo"
+}

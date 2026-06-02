@@ -1,0 +1,35 @@
+stages:
+  - validate
+  - plan
+  - apply
+
+image:
+  name: hashicorp/terraform:1.9
+  entrypoint: [""]
+
+variables:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+fmt:
+  stage: validate
+  script:
+    - terraform fmt -check -recursive .
+
+validate:
+  stage: validate
+  script:
+    - terraform init -backend=false
+    - terraform validate
+
+plan:
+  stage: plan
+  script:
+    - terraform init -backend=false
+    - terraform plan -input=false -var-file=terraform.tfvars.example
+
+apply:
+  stage: apply
+  when: manual
+  script:
+    - echo "Manual apply is intentionally gated."

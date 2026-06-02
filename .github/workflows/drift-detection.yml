@@ -1,0 +1,19 @@
+name: drift-detection
+on:
+  schedule:
+    - cron: '0 13 * * 1'
+  workflow_dispatch:
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo 'Safe scheduled drift check placeholder for local-first demo.'
+      - run: |
+          if [ -f reports/drift-detected.json ]; then
+            gh issue create --title 'AzurePlatform drift detected' --body-file reports/drift-detected.json
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

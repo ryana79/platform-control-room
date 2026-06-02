@@ -1,0 +1,12 @@
+name: terraform-plan
+on: [push, pull_request]
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+      - run: terraform fmt -check -recursive infra
+      - run: terraform -chdir=infra/environments/dev init -backend=false
+      - run: terraform -chdir=infra/environments/dev validate
+      - run: terraform -chdir=infra/environments/dev plan -refresh=false -input=false -var-file=terraform.tfvars.example

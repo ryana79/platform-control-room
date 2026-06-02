@@ -1,0 +1,15 @@
+name: cost-report
+on:
+  schedule:
+    - cron: '0 14 * * 1'
+  workflow_dispatch:
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: mkdir -p reports && date > reports/weekly-cost-report.md
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: update weekly cost report'
+          file_pattern: reports/*.md

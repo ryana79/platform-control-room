@@ -1,0 +1,370 @@
+from __future__ import annotations
+
+import json
+from string import Template
+from typing import Any
+
+from app.services.common import slugify
+
+
+CATALOG = [
+    {
+        "id": "resource_group",
+        "name": "Resource Group",
+        "description": "Create a tagged Azure resource group as the landing zone for an application team.",
+        "questions": [
+            {"key": "purpose", "question": "What will this resource group be used for?"},
+            {"key": "data_classification", "question": "What data classification applies: public, internal, confidential, or restricted?"},
+        ],
+    },
+    {
+        "id": "storage_account",
+        "name": "Storage Account",
+        "description": "Create a secure Azure Storage account with private defaults and mandatory tags.",
+        "questions": [
+            {"key": "purpose", "question": "What kind of data will the storage account hold?"},
+            {"key": "replication", "question": "Which replication tier should it use: LRS, ZRS, or GRS?"},
+            {"key": "data_classification", "question": "What data classification applies: public, internal, confidential, or restricted?"},
+        ],
+    },
+    {
+        "id": "linux_vm",
+        "name": "Linux VM",
+        "description": "Generate a small Azure Linux VM Terraform plan with network resources and a manual apply gate.",
+        "questions": [
+            {"key": "purpose", "question": "What workload will run on the VM?"},
+            {"key": "vm_size", "question": "What VM size should be planned? Use a small SKU like Standard_B1s unless you need more."},
+            {"key": "admin_username", "question": "What admin username should the Terraform plan use?"},
+        ],
+    },
+]
+
+DEFAULTS = {
+    "purpose": "application platform landing zone",
+    "data_classification": "internal",
+    "replication": "LRS",
+    "vm_size": "Standard_B1s",
+    "admin_username": "azureuser",
+}
+
+
+def deployment_catalog() -> list[dict[str, Any]]:
+    return CATALOG
+
+
+def template_definition(deployment_type: str) -> dict[str, Any]:
+    for item in CATALOG:
+        if item["id"] == deployment_type:
+            return item
+    raise ValueError(f"Unknown deployment type: {deployment_type}")
+
+
+def next_required_question(deployment_type: str, answers: dict[str, Any]) -> dict[str, str] | None:
+    for question in template_definition(deployment_type)["questions"]:
+        if not answers.get(question["key"]):
+            return question
+    return None
+
+
+def next_question(deployment_type: str, answers: dict[str, Any]) -> str | None:
+    question = next_required_question(deployment_type, answers)
+    return question["question"] if question else None
+
+
+def answer_key_for_question(deployment_type: str, answers: dict[str, Any]) -> str | None:
+    question = next_required_question(deployment_type, answers)
+    return question["key"] if question else None
+
+
+def deployment_name(value: str) -> str:
+    return slugify(value) or "deployment"
+
+
+def build_spec(base: dict[str, Any], answers: dict[str, Any]) -> dict[str, Any]:
+    merged = {**DEFAULTS, **answers}
+    name = deployment_name(base["name"])
+    deployment_type = base["deployment_type"]
+    tags = {
+        "owner": base["owner"],
+        "environment": base["environment"],
+        "cost_center": f"cc-{slugify(base['owner'])[:24]}",
+        "data_classification": str(merged["data_classification"]).lower(),
+        "managed_by": "platform-control-room",
+    }
+    spec = {
+        "deployment_type": deployment_type,
+        "name": name,
+        "resource_group_name": f"rg-{name}-{base['environment']}",
+        "location": base["region"],
+        "environment": base["environment"],
+        "owner": base["owner"],
+        "purpose": merged["purpose"],
+        "tags": tags,
+    }
+
+    if deployment_type == "storage_account":
+        spec["storage_account_name"] = storage_account_name(name)
+        spec["replication"] = normalize_replication(str(merged["replication"]))
+
+    if deployment_type == "linux_vm":
+        spec["vm_name"] = f"vm-{name}"
+        spec["vm_size"] = str(merged["vm_size"]) or "Standard_B1s"
+        spec["admin_username"] = slugify(str(merged["admin_username"])).replace("-", "") or "azureuser"
+
+    return spec
+
+
+def render_deployment_files(spec: dict[str, Any]) -> dict[str, str]:
+    deployment_type = spec["deployment_type"]
+    files = {
+        "README.md": render_readme(spec),
+        "main.tf": render_main_tf(spec),
+        "variables.tf": VARIABLES_TF,
+        "outputs.tf": render_outputs_tf(spec),
+        "terraform.tfvars.example": render_tfvars(spec),
+        ".gitlab-ci.yml": render_gitlab_ci(),
+    }
+    if deployment_type == "linux_vm":
+        files["cloud-init.yaml"] = "#cloud-config\npackage_update: true\npackages:\n  - nginx\n"
+    return files
+
+
+def render_readme(spec: dict[str, Any]) -> str:
+    return f"""# {spec['name']} Azure Deployment
+
+Generated by Platform Control Room.
+
+Deployment type: `{spec['deployment_type']}`
+Environment: `{spec['environment']}`
+Owner: `{spec['owner']}`
+Purpose: {spec['purpose']}
+
+The GitLab pipeline validates and plans this Terraform project automatically. `apply` is manual and should stay protected.
+"""
+
+
+def render_main_tf(spec: dict[str, Any]) -> str:
+    templates = {
+        "resource_group": RESOURCE_GROUP_TF,
+        "storage_account": STORAGE_ACCOUNT_TF,
+        "linux_vm": LINUX_VM_TF,
+    }
+    try:
+        return templates[spec["deployment_type"]]
+    except KeyError as exc:
+        raise ValueError(f"Unknown deployment type: {spec['deployment_type']}") from exc
+
+
+def render_outputs_tf(spec: dict[str, Any]) -> str:
+    outputs = {
+        "resource_group": 'output "resource_group_name" {\n  value = azurerm_resource_group.this.name\n}\n',
+        "storage_account": 'output "storage_account_name" {\n  value = azurerm_storage_account.this.name\n}\n',
+        "linux_vm": 'output "vm_name" {\n  value = azurerm_linux_virtual_machine.this.name\n}\n',
+    }
+    try:
+        return outputs[spec["deployment_type"]]
+    except KeyError as exc:
+        raise ValueError(f"Unknown deployment type: {spec['deployment_type']}") from exc
+
+
+def render_tfvars(spec: dict[str, Any]) -> str:
+    values = {
+        "name": spec["name"],
+        "resource_group_name": spec["resource_group_name"],
+        "location": spec["location"],
+        "environment": spec["environment"],
+        "owner": spec["owner"],
+        "purpose": spec["purpose"],
+        "tags_json": json.dumps(spec["tags"], indent=2),
+        "storage_account_name": spec.get("storage_account_name", ""),
+        "replication": spec.get("replication", "LRS"),
+        "vm_name": spec.get("vm_name", ""),
+        "vm_size": spec.get("vm_size", "Standard_B1s"),
+        "admin_username": spec.get("admin_username", "azureuser"),
+    }
+    return Template(TFVARS_TEMPLATE).substitute(values)
+
+
+def render_gitlab_ci() -> str:
+    return GITLAB_CI
+
+
+def storage_account_name(name: str) -> str:
+    return ("st" + deployment_name(name).replace("-", ""))[:24].ljust(3, "0")
+
+
+def normalize_replication(value: str) -> str:
+    normalized = value.upper().replace("STANDARD_", "")
+    return normalized if normalized in {"LRS", "ZRS", "GRS"} else "LRS"
+
+
+VARIABLES_TF = """variable "name" { type = string }
+variable "resource_group_name" { type = string }
+variable "location" { type = string }
+variable "environment" { type = string }
+variable "owner" { type = string }
+variable "purpose" { type = string }
+variable "tags" { type = map(string) }
+variable "storage_account_name" { type = string }
+variable "replication" { type = string }
+variable "vm_name" { type = string }
+variable "vm_size" { type = string }
+variable "admin_username" { type = string }
+"""
+
+PROVIDER_TF = """terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.0"
+    }
+  }
+}
+
+provider "azurerm" {
+  features {}
+  resource_provider_registrations = "none"
+}
+"""
+
+RESOURCE_GROUP_TF = PROVIDER_TF + """
+resource "azurerm_resource_group" "this" {
+  name     = var.resource_group_name
+  location = var.location
+  tags     = merge(var.tags, { purpose = var.purpose })
+}
+"""
+
+STORAGE_ACCOUNT_TF = RESOURCE_GROUP_TF + """
+resource "azurerm_storage_account" "this" {
+  name                            = var.storage_account_name
+  resource_group_name             = azurerm_resource_group.this.name
+  location                        = azurerm_resource_group.this.location
+  account_tier                    = "Standard"
+  account_replication_type        = var.replication
+  min_tls_version                 = "TLS1_2"
+  allow_nested_items_to_be_public = false
+  tags                            = var.tags
+}
+"""
+
+LINUX_VM_TF = RESOURCE_GROUP_TF + """
+resource "azurerm_virtual_network" "this" {
+  name                = "vnet-${var.name}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  address_space       = ["10.42.0.0/16"]
+  tags                = var.tags
+}
+
+resource "azurerm_subnet" "this" {
+  name                 = "snet-${var.name}"
+  resource_group_name  = azurerm_resource_group.this.name
+  virtual_network_name = azurerm_virtual_network.this.name
+  address_prefixes     = ["10.42.1.0/24"]
+}
+
+resource "azurerm_network_interface" "this" {
+  name                = "nic-${var.name}"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.this.id
+    private_ip_address_allocation = "Dynamic"
+  }
+
+  tags = var.tags
+}
+
+resource "azurerm_linux_virtual_machine" "this" {
+  name                            = var.vm_name
+  resource_group_name             = azurerm_resource_group.this.name
+  location                        = azurerm_resource_group.this.location
+  size                            = var.vm_size
+  admin_username                  = var.admin_username
+  disable_password_authentication = true
+  network_interface_ids           = [azurerm_network_interface.this.id]
+
+  admin_ssh_key {
+    username   = var.admin_username
+    public_key = "ssh-rsa replace-with-approved-key platform-control-room"
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts-gen2"
+    version   = "latest"
+  }
+
+  tags = var.tags
+}
+"""
+
+TFVARS_TEMPLATE = """name                = "$name"
+resource_group_name = "$resource_group_name"
+location            = "$location"
+environment         = "$environment"
+owner               = "$owner"
+purpose             = "$purpose"
+storage_account_name = "$storage_account_name"
+replication          = "$replication"
+vm_name              = "$vm_name"
+vm_size              = "$vm_size"
+admin_username       = "$admin_username"
+tags = $tags_json
+"""
+
+GITLAB_CI = """stages:
+  - validate
+  - plan
+  - apply
+
+image:
+  name: hashicorp/terraform:1.9
+  entrypoint: [""]
+
+variables:
+  TF_IN_AUTOMATION: "true"
+  TF_INPUT: "false"
+
+before_script:
+  - terraform --version
+
+fmt:
+  stage: validate
+  script:
+    - terraform fmt -check -recursive .
+
+validate:
+  stage: validate
+  script:
+    - terraform init -backend=false
+    - terraform validate
+
+plan:
+  stage: plan
+  script:
+    - terraform init -backend=false
+    - terraform plan -input=false -var-file=terraform.tfvars.example
+  artifacts:
+    when: always
+    paths:
+      - terraform.tfvars.example
+
+apply:
+  stage: apply
+  when: manual
+  allow_failure: false
+  script:
+    - echo "Manual apply is intentionally gated. Configure Azure OIDC/backend before enabling real applies."
+"""

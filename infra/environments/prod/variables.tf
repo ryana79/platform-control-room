@@ -1,0 +1,10 @@
+variable "workload_name" { type = string }
+variable "environment" { type = string }
+variable "location" { type = string }
+variable "owner" { type = string }
+variable "cost_center" { type = string }
+variable "data_classification" { type = string }
+variable "public_access" { type = bool }
+variable "enabled_services" { type = list(string) }
+variable "aks_node_count" { type = number }
+variable "tags" { type = map(string) }
