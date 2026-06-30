@@ -1,6 +1,6 @@
 # Platform Control Room — Self-Service Cloud Platform Engineering Portal
 
-Platform Control Room is a Mission Control-style self-service platform engineering portal for onboarding workloads into an Azure-ready cloud platform. It is designed for Cloud Engineer, Platform Engineer, Junior Azure Engineer, and cloud/platform engineering interviews.
+Platform Control Room is a Mission Control-style self-service platform engineering portal for onboarding workloads into an Azure-ready cloud platform. It is designed to showcase practical platform engineering workflows for workload intake, policy validation, GitOps delivery, drift visibility, and cost governance.
 
 The default demo is free: no Azure subscription, no Azure credentials, and no paid resources are required.
 
@@ -61,7 +61,6 @@ Recommended screenshots for LinkedIn or a portfolio post:
 ## Free Local Demo Setup
 
 ```bash
-cd azureplatform
 cp .env.example .env
 docker compose up --build
 ```
@@ -69,7 +68,7 @@ docker compose up --build
 If Docker is not installed, run the app natively in two terminals:
 
 ```bash
-cd "/Users/ryanamir/Desktop/Azure Platform/azureplatform/backend"
+cd backend
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
@@ -77,7 +76,7 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 ```bash
-cd "/Users/ryanamir/Desktop/Azure Platform/azureplatform/frontend"
+cd frontend
 npm install
 npm run dev
 ```
@@ -129,7 +128,7 @@ See `docs/ai-gitlab-deployments.md`.
 7. Trigger demo drift and run drift detection.
 8. Generate a markdown cost governance report.
 
-## Interview Demo Script
+## Demo Walkthrough
 
 1. Open Mission Control and explain the topology: portal, API, database, policy, GitOps, cluster, cost.
 2. Click `Advance demo` to show activity changing from backend state.
