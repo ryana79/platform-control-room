@@ -48,15 +48,15 @@ flowchart LR
 
 ## Screenshots
 
-Mission Control dashboard — workload launch control with live platform stats:
+The Mission Control dashboard, with workload launch control and live platform stats:
 
 ![Dashboard: cloud workload launch control with live stats](docs/screenshots/dashboard.png)
 
-Platform Requests — onboarded workloads with generated artifacts, policy pass/fail status, environment, and cost:
+Platform Requests: onboarded workloads with generated artifacts, policy pass/fail status, environment, and cost:
 
 ![Workloads: platform requests with policy status and cost](docs/screenshots/workloads.png)
 
-FinOps Briefing Room — monthly cost exposure and per-workload cost distribution:
+The FinOps Briefing Room, showing monthly cost exposure and per-workload cost distribution:
 
 ![FinOps: monthly exposure and workload cost distribution](docs/screenshots/finops.png)
 
@@ -150,7 +150,7 @@ See `docs/ai-gitlab-deployments.md`.
 
 ## Optional Azure Deployment Warning
 
-Azure deployment is optional and not required for the portfolio demo. The Terraform modules are Azure-ready, but real `terraform apply` requires your own Azure subscription, credentials, backend state design, security review, and cost approval.
+Azure deployment is optional and not required for the default demo. The Terraform modules are Azure-ready, but real `terraform apply` requires your own Azure subscription, credentials, backend state design, security review, and cost approval.
 
 ## How Workload Onboarding Works
 
