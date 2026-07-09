@@ -1,6 +1,11 @@
 # Platform Control Room — Self-Service Cloud Platform Engineering Portal
 
-Platform Control Room is a Mission Control-style self-service platform engineering portal for onboarding workloads into an Azure-ready cloud platform. It is designed to showcase practical platform engineering workflows for workload intake, policy validation, GitOps delivery, drift visibility, and cost governance.
+[![Backend CI](https://github.com/ryana79/platform-control-room/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/ryana79/platform-control-room/actions/workflows/backend-ci.yml)
+[![Frontend CI](https://github.com/ryana79/platform-control-room/actions/workflows/frontend-ci.yml/badge.svg)](https://github.com/ryana79/platform-control-room/actions/workflows/frontend-ci.yml)
+[![Policy Check](https://github.com/ryana79/platform-control-room/actions/workflows/policy-check.yml/badge.svg)](https://github.com/ryana79/platform-control-room/actions/workflows/policy-check.yml)
+[![Live Demo](https://img.shields.io/badge/live%20demo-platformcontrolroom.com-0ea5e9)](https://platformcontrolroom.com)
+
+Platform Control Room is a Mission Control-style self-service platform engineering portal for onboarding workloads into an Azure-ready cloud platform. It implements practical platform engineering workflows end to end: workload intake, policy validation, GitOps delivery, drift visibility, and cost governance.
 
 The default demo is free: no Azure subscription, no Azure credentials, and no paid resources are required.
 
@@ -14,12 +19,12 @@ Live demo:
 
 Platform teams need repeatable workload onboarding, policy guardrails, GitOps delivery, drift visibility, and cost governance. Platform Control Room demonstrates those workflows end to end using a real backend, database-backed state, generated files, local Kubernetes, ArgoCD, Gatekeeper, and Conftest.
 
-## Portfolio Highlights
+## Engineering Highlights
 
 - Full-stack platform portal with Next.js, TypeScript, FastAPI, SQLAlchemy, SQLite/Postgres, Docker, Vercel, and Neon.
-- 20+ REST API routes for workload onboarding, artifact generation, policy checks, GitOps status, drift detection, activity, and cost reporting.
+- 25 REST API routes for workload onboarding, artifact generation, policy checks, GitOps status, drift detection, activity, and cost reporting.
 - Generates Terraform tfvars, Helm values, Kubernetes manifests, and ArgoCD Application YAML from each workload request.
-- 6 GitHub Actions workflows covering backend tests, frontend lint/build, Terraform validation, Conftest policy checks, cost reports, and drift checks.
+- 7 GitHub Actions workflows covering backend tests, frontend lint/build, Terraform validation, Conftest policy checks, cost reports, drift checks, and the Azure connector plan.
 - Hosted public demo backed by Postgres plus a richer local Docker/kind/ArgoCD/Gatekeeper workflow.
 - Azure connector lite validates Entra ID/GitHub OIDC, Azure Storage Terraform state, Resource Graph reads, Cost Management reads, and Terraform plan without running AKS.
 - AI GitLab deployment generator uses a Groq/OpenAI-compatible intake flow to produce Terraform and GitLab CI pipelines for Azure Resource Group, Storage Account, and Linux VM requests.
@@ -43,11 +48,17 @@ flowchart LR
 
 ## Screenshots
 
-Recommended screenshots for LinkedIn or a portfolio post:
+Mission Control dashboard — workload launch control with live platform stats:
 
-- `platform-control-room-dashboard.png`: public landing/dashboard view showing the Mission Control-style onboarding flow.
-- `platform-control-room-workload-artifacts.png`: workload detail page showing generated Terraform, Helm, Kubernetes, and ArgoCD artifacts.
-- `platform-control-room-finops.png`: FinOps view showing monthly exposure and workload cost distribution.
+![Dashboard: cloud workload launch control with live stats](docs/screenshots/dashboard.png)
+
+Platform Requests — onboarded workloads with generated artifacts, policy pass/fail status, environment, and cost:
+
+![Workloads: platform requests with policy status and cost](docs/screenshots/workloads.png)
+
+FinOps Briefing Room — monthly cost exposure and per-workload cost distribution:
+
+![FinOps: monthly exposure and workload cost distribution](docs/screenshots/finops.png)
 
 ## Tech Stack
 
