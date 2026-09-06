@@ -3,7 +3,7 @@
 import type { ComponentType } from "react";
 import { useEffect, useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { AlertTriangle, Boxes, DollarSign, GitBranch, ShieldAlert, Sparkles } from "lucide-react";
+import { AlertTriangle, Boxes, DollarSign, GitBranch, ShieldAlert } from "lucide-react";
 import { api } from "@/lib/api";
 import { ActivityTimeline, CommandButton, LoadingPanel, MissionPanel, StatusPill, TopologyMap, type Tone } from "@/components/mission-control";
 
@@ -82,22 +82,20 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6 text-slate-100">
-      <section className="mission-glow cut-corners relative overflow-hidden border border-cyan-300/20 bg-[#050914] p-8">
-        <div className="absolute -right-24 -top-32 h-80 w-80 rounded-full border border-cyan-300/20 bg-cyan-300/5" />
-        <div className="absolute right-10 top-10 hidden h-28 w-28 rounded-full border border-amber-300/20 bg-amber-300/5 md:block" />
+      <section className="relative overflow-hidden rounded-lg border border-slate-800 bg-slate-900/90 p-6 md:p-8">
         <div className="relative max-w-4xl">
-          <StatusPill tone="good">Live local control plane</StatusPill>
-          <h1 className="mt-5 max-w-3xl text-5xl font-black tracking-[-0.06em] text-slate-50 md:text-7xl">
-            Cloud workload launch control, built for platform teams.
+          <StatusPill tone="good">Operational Control Plane</StatusPill>
+          <h1 className="mt-4 max-w-3xl text-3xl font-bold tracking-tight text-slate-100 md:text-5xl">
+            Internal Platform Operations Portal
           </h1>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">
-            This demo is not a static dashboard. Requests are persisted, platform artifacts are generated, policy failures are explainable, and the same control plane can run locally or against a free hosted database.
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
+            Workload intake, infrastructure-as-code generation, GitOps delivery via ArgoCD, policy validation, and runtime drift detection across cloud environments.
           </p>
           <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <CommandButton href="/workloads/new" label="Launch workload" detail="Generate IaC and GitOps" tone="good" />
-            <CommandButton href="/policies" label="Inspect guardrails" detail="OPA and platform controls" tone="warn" />
-            <CommandButton onClick={() => runDemoAction("advance")} label="Advance demo" detail="Simulate workflow progress" tone="info" />
-            <CommandButton onClick={() => runDemoAction("reset")} label="Reset scenario" detail="Reseed the platform state" tone="neutral" />
+            <CommandButton href="/workloads/new" label="New Workload" detail="Provision IaC & GitOps" tone="good" />
+            <CommandButton href="/policies" label="Policy Guardrails" detail="OPA and Gatekeeper" tone="warn" />
+            <CommandButton onClick={() => runDemoAction("advance")} label="Advance Workflow" detail="Simulate progression" tone="info" />
+            <CommandButton onClick={() => runDemoAction("reset")} label="Reset State" detail="Restore clean baseline" tone="neutral" />
           </div>
           {demoMessage && <div className="mt-4"><StatusPill tone="good">{demoMessage}</StatusPill></div>}
         </div>
@@ -116,7 +114,7 @@ export default function DashboardPage() {
         ))}
       </div>
 
-      <MissionPanel title="Workload Delivery Topology" eyebrow="desired state pipeline" action={<StatusPill tone="info"><Sparkles className="h-3 w-3" /> generated from API state</StatusPill>}>
+      <MissionPanel title="Workload Delivery Topology" eyebrow="desired state pipeline" action={<StatusPill tone="info">Source: API state</StatusPill>}>
         <TopologyMap nodes={topologyNodes} />
       </MissionPanel>
 

@@ -99,10 +99,10 @@ export default function DeploymentsPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">AI Deployment Generator</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Azure Pipeline Builder</h1>
-        <p className="mt-2 max-w-3xl text-slate-400">
-          Choose what you want deployed, answer the intake questions, then generate Terraform and a GitLab CI pipeline for Azure plan review.
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Automated Provisioning</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Azure Pipeline Builder</h1>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-400">
+          Select workload infrastructure type, complete configuration requirements, and generate validated Terraform and GitLab CI automation pipelines.
         </p>
       </div>
 

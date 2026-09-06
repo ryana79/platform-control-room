@@ -18,9 +18,9 @@ export default function GitOpsPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">GitOps / ArgoCD</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Desired State Dispatch</h1>
-        <p className="mt-2 text-slate-400">Generated Applications plus graceful local CLI detection.</p>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Continuous Delivery</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">GitOps & ArgoCD</h1>
+        <p className="mt-2 text-sm text-slate-400">Generated ArgoCD application manifests and synchronization status with the local cluster.</p>
       </div>
 
       <MissionPanel title="Local ArgoCD UI" eyebrow="operator access">

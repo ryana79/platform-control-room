@@ -27,35 +27,29 @@
 
 body {
   color: hsl(var(--foreground));
-  background:
-    radial-gradient(circle at 16% 12%, rgba(0, 229, 255, .18), transparent 28rem),
-    radial-gradient(circle at 86% 4%, rgba(245, 158, 11, .12), transparent 24rem),
-    linear-gradient(135deg, rgba(4, 12, 24, .96), rgba(3, 7, 18, .98)),
-    hsl(var(--background));
+  background-color: hsl(var(--background));
 }
 
 .grid-paper {
+  background-color: #030712;
   background-image:
-    linear-gradient(rgba(125, 249, 255, .08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(125, 249, 255, .08) 1px, transparent 1px),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, .03), rgba(255, 255, 255, .03) 1px, transparent 1px, transparent 4px);
-  background-size: 32px 32px, 32px 32px, 100% 4px;
+    linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .mission-glow {
   box-shadow:
-    0 0 0 1px rgba(103, 232, 249, .16),
-    0 24px 80px rgba(8, 145, 178, .14),
-    inset 0 1px 0 rgba(255, 255, 255, .06);
+    0 1px 3px 0 rgba(0, 0, 0, 0.3),
+    0 1px 2px -1px rgba(0, 0, 0, 0.3);
 }
 
 .cut-corners {
-  clip-path: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  border-radius: 8px;
 }
 
 .radar-sweep {
-  background: conic-gradient(from 90deg, transparent, rgba(34, 211, 238, .18), transparent 34%);
-  animation: sweep 7s linear infinite;
+  display: none;
 }
 
 @keyframes sweep {

@@ -21,17 +21,17 @@ export default function CostPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Cost Governance</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">FinOps Briefing Room</h1>
-        <p className="mt-2 text-slate-400">Estimates are generated from workload replicas, environment, selected services, and data classification.</p>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Financial Operations</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Cost Governance</h1>
+        <p className="mt-2 text-sm text-slate-400">Pre-provisioning cost estimation calculated from workload capacity, environment tiers, and attached cloud services.</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[.8fr_1.2fr]">
-        <MissionPanel title="Monthly Exposure" eyebrow="estimated usd">
-          <div className="text-6xl font-black tracking-tight text-amber-100">${data.monthly_total}</div>
-          <p className="mt-3 text-sm text-slate-400">Transparent estimate, not a cloud bill. Built for pre-provisioning governance conversations.</p>
-          <Button className="mt-5" onClick={() => api.report().then(setReport)}>Generate report</Button>
-          {report && <p className="mt-3 text-xs text-cyan-100">Report written to {report.path}</p>}
+        <MissionPanel title="Monthly Forecast" eyebrow="estimated usd">
+          <div className="text-4xl font-bold tracking-tight text-amber-300">${data.monthly_total}</div>
+          <p className="mt-2 text-xs leading-relaxed text-slate-400">Pre-provisioning infrastructure estimate to evaluate resource allocation before deployment.</p>
+          <Button className="mt-4" onClick={() => api.report().then(setReport)}>Export Cost Report</Button>
+          {report && <p className="mt-2.5 text-xs text-cyan-300">Report saved: {report.path}</p>}
         </MissionPanel>
 
         <MissionPanel title="Workload Cost Distribution" eyebrow="chargeback lanes">

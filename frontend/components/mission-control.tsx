@@ -56,13 +56,12 @@ export function MissionPanel({
   children,
 }: MissionPanelProps) {
   return (
-    <section className={cn("mission-glow cut-corners relative overflow-hidden border border-cyan-300/15 bg-slate-950/78 p-5 backdrop-blur-xl", className)}>
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/70 to-transparent" />
+    <section className={cn("relative overflow-hidden rounded-lg border border-slate-800 bg-slate-900/90 p-5 shadow-sm", className)}>
       {(title || eyebrow || action) && (
-        <div className="mb-4 flex items-start justify-between gap-4">
+        <div className="mb-4 flex items-start justify-between gap-4 border-b border-slate-800/80 pb-3">
           <div>
-            {eyebrow && <div className="font-mono text-[10px] uppercase tracking-[0.32em] text-cyan-300/70">{eyebrow}</div>}
-            {title && <h2 className="mt-1 text-lg font-black tracking-tight text-slate-50">{title}</h2>}
+            {eyebrow && <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">{eyebrow}</div>}
+            {title && <h2 className="mt-1 text-base font-bold tracking-tight text-slate-100">{title}</h2>}
           </div>
           {action}
         </div>
@@ -73,7 +72,7 @@ export function MissionPanel({
 }
 
 export function StatusPill({ children, tone = "neutral" }: StatusPillProps) {
-  return <span className={cn("inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em]", toneClasses[tone])}>{children}</span>;
+  return <span className={cn("inline-flex items-center gap-1.5 rounded px-2 py-0.5 font-mono text-[11px] font-medium tracking-wide", toneClasses[tone])}>{children}</span>;
 }
 
 export function CommandButton({
@@ -84,13 +83,13 @@ export function CommandButton({
   tone = "info",
 }: CommandButtonProps) {
   const content = (
-    <div className={cn("group flex h-full items-center justify-between gap-4 rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-cyan-200/70", toneClasses[tone])}>
+    <div className={cn("group flex h-full items-center justify-between gap-4 rounded-lg border p-3.5 text-left transition hover:border-slate-600 bg-slate-900/80", toneClasses[tone])}>
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.24em] opacity-80">Command</div>
-        <div className="mt-1 font-bold text-slate-50">{label}</div>
-        <div className="mt-1 text-xs opacity-75">{detail}</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] opacity-80">Action</div>
+        <div className="mt-1 text-sm font-semibold text-slate-100">{label}</div>
+        <div className="mt-0.5 text-xs text-slate-400">{detail}</div>
       </div>
-      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+      <ArrowRight className="h-4 w-4 text-slate-400 transition group-hover:translate-x-0.5 group-hover:text-slate-200" />
     </div>
   );
 

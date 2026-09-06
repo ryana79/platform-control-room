@@ -31,9 +31,9 @@ export default function KubernetesPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Kubernetes Status</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Local Cluster Telemetry</h1>
-        <p className="mt-2 text-slate-400">Live data from kubectl when kind is available.</p>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Cluster Infrastructure</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Kubernetes Status</h1>
+        <p className="mt-2 text-sm text-slate-400">Live operational telemetry from cluster API endpoints and local kind environments.</p>
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
         <Panel title="Namespaces" items={data.namespaces} />

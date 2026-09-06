@@ -47,10 +47,10 @@ export default function WorkloadDetailPage() {
     <div className="space-y-6 text-slate-100">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Workload Control Packet</div>
-          <h1 className="mt-2 text-4xl font-black tracking-tight">{workload.name}</h1>
-          <p className="mt-2 text-slate-400">
-            {workload.owner} / {workload.environment} / {workload.runtime_type}
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Workload Specification</div>
+          <h1 className="mt-1 text-3xl font-bold tracking-tight text-slate-100">{workload.name}</h1>
+          <p className="mt-1 text-xs text-slate-400">
+            Owner: {workload.owner} | Env: {workload.environment} | Runtime: {workload.runtime_type}
           </p>
         </div>
         <div className="flex gap-2">
@@ -59,13 +59,13 @@ export default function WorkloadDetailPage() {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2 rounded-2xl border border-cyan-300/15 bg-black/20 p-2">
+      <div className="flex flex-wrap gap-1 rounded-lg border border-slate-800 bg-slate-900/60 p-1.5">
         {tabs.map((tab) => (
           <button
             key={tab}
             type="button"
             onClick={() => setActiveTab(tab)}
-            className={`rounded-xl px-4 py-2 font-mono text-[10px] uppercase tracking-[0.2em] transition ${activeTab === tab ? "bg-cyan-300 text-slate-950" : "text-slate-400 hover:bg-cyan-300/10 hover:text-cyan-100"}`}
+            className={`rounded-md px-3.5 py-1.5 font-mono text-xs uppercase tracking-wider transition ${activeTab === tab ? "bg-cyan-600 font-semibold text-white" : "text-slate-400 hover:bg-slate-800 hover:text-slate-200"}`}
           >
             {tab}
           </button>
@@ -91,37 +91,37 @@ export default function WorkloadDetailPage() {
       )}
 
       {activeTab === "policy" && (
-        <MissionPanel title="Policy Decision" eyebrow="guardrail explanation">
+        <MissionPanel title="Policy Evaluation" eyebrow="OPA & Gatekeeper Guardrails">
           <p className="text-sm text-slate-300">{policyResult.summary ?? "No policy summary available."}</p>
           <div className="mt-4 space-y-3">
             {policyResult.violations?.length ? (
               policyResult.violations.map((violation) => (
-                <div key={`${violation.policy}-${violation.message}`} className="rounded-2xl border border-rose-300/20 bg-rose-400/10 p-4">
+                <div key={`${violation.policy}-${violation.message}`} className="rounded-lg border border-rose-500/30 bg-rose-500/10 p-3.5">
                   <StatusPill tone="bad">{violation.policy}</StatusPill>
-                  <p className="mt-2 text-sm text-rose-100">{violation.message}</p>
+                  <p className="mt-1.5 text-xs text-rose-200">{violation.message}</p>
                 </div>
               ))
             ) : (
-              <div className="rounded-2xl border border-emerald-300/20 bg-emerald-400/10 p-4 text-sm text-emerald-100">All workload onboarding policies passed.</div>
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-xs text-emerald-200">All workload onboarding policies passed.</div>
             )}
           </div>
         </MissionPanel>
       )}
 
       {activeTab === "cost" && (
-        <MissionPanel title="Cost Estimate" eyebrow="service level estimate">
-          <div className="text-5xl font-black text-amber-100">${costResult.monthly_estimate ?? workload.estimated_monthly_cost}</div>
+        <MissionPanel title="Cost Analysis" eyebrow="Projected Monthly Infrastructure">
+          <div className="text-4xl font-bold text-amber-300">${costResult.monthly_estimate ?? workload.estimated_monthly_cost}</div>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {Object.entries(costResult.service_estimates ?? {}).map(([service, cost]) => (
-              <div key={service} className="rounded-2xl border border-cyan-300/10 bg-cyan-300/5 p-4">
-                <div className="text-sm text-slate-400">{service}</div>
-                <div className="mt-1 text-2xl font-black">${cost}</div>
+              <div key={service} className="rounded-lg border border-slate-800 bg-slate-900/60 p-3.5">
+                <div className="text-xs text-slate-400">{service}</div>
+                <div className="mt-1 text-xl font-bold text-slate-100">${cost}</div>
               </div>
             ))}
           </div>
-          <ul className="mt-4 space-y-2 text-sm text-slate-300">
+          <ul className="mt-4 space-y-2 text-xs text-slate-300">
             {(costResult.recommendations ?? []).map((recommendation) => (
-              <li key={recommendation} className="rounded-xl border border-amber-300/15 bg-amber-300/10 p-3">{recommendation}</li>
+              <li key={recommendation} className="rounded-md border border-amber-500/20 bg-amber-500/5 p-2.5">{recommendation}</li>
             ))}
           </ul>
         </MissionPanel>

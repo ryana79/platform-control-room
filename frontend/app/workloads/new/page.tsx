@@ -52,10 +52,10 @@ export default function NewWorkloadPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Launch Sequence</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Create Workload</h1>
-        <p className="mt-2 text-slate-400">
-          Submit a platform request and generate Terraform, Helm, ArgoCD, policy, and cost outputs.
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Workload Provisioning</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Create Workload</h1>
+        <p className="mt-2 text-sm text-slate-400">
+          Submit workload requirements to generate verified Terraform, Helm values, ArgoCD manifests, and policy evaluations.
         </p>
       </div>
 
@@ -67,44 +67,44 @@ export default function NewWorkloadPage() {
                 {error}
               </div>
             )}
-            <Field label="Workload name"><Input name="name" defaultValue="payments-api" pattern="[a-z0-9-]+" required /></Field>
-            <Field label="Team owner"><Input name="owner" defaultValue="platform-payments" required /></Field>
-            <Field label="Environment"><Select name="environment" defaultValue="dev"><option>dev</option><option>staging</option><option>prod</option></Select></Field>
-            <Field label="Region"><Select name="region" defaultValue="eastus"><option>eastus</option><option>westus2</option><option>centralus</option></Select></Field>
-            <Field label="Runtime type"><Select name="runtime_type" defaultValue="api"><option value="api">API</option><option value="worker">worker</option><option value="frontend">frontend</option><option value="cronjob">cronjob</option></Select></Field>
+            <Field label="Workload name"><Input name="name" defaultValue="payments-api" pattern="[a-z0-9-]+" placeholder="e.g. payments-api" required /></Field>
+            <Field label="Team owner"><Input name="owner" defaultValue="platform-payments" placeholder="e.g. platform-payments" required /></Field>
+            <Field label="Environment"><Select name="environment" defaultValue="dev"><option value="dev">Development (dev)</option><option value="staging">Staging (staging)</option><option value="prod">Production (prod)</option></Select></Field>
+            <Field label="Region"><Select name="region" defaultValue="eastus"><option value="eastus">East US</option><option value="westus2">West US 2</option><option value="centralus">Central US</option></Select></Field>
+            <Field label="Runtime type"><Select name="runtime_type" defaultValue="api"><option value="api">API Service</option><option value="worker">Background Worker</option><option value="frontend">Frontend Web</option><option value="cronjob">Scheduled CronJob</option></Select></Field>
             <Field label="Replicas"><Input name="replicas" type="number" min="1" max="20" defaultValue="2" /></Field>
-            <Field label="CPU request"><Input name="cpu_request" defaultValue="250m" /></Field>
-            <Field label="CPU limit"><Input name="cpu_limit" defaultValue="500m" /></Field>
-            <Field label="Memory request"><Input name="memory_request" defaultValue="256Mi" /></Field>
-            <Field label="Memory limit"><Input name="memory_limit" defaultValue="512Mi" /></Field>
-            <Field label="Public access required"><Select name="public_access" defaultValue="false"><option value="false">No</option><option value="true">Yes</option></Select></Field>
-            <Field label="Cost center"><Input name="cost_center" defaultValue="cc-platform-042" /></Field>
-            <Field label="Data classification"><Select name="data_classification" defaultValue="internal"><option>public</option><option>internal</option><option>confidential</option><option>restricted</option></Select></Field>
+            <Field label="CPU request"><Input name="cpu_request" defaultValue="250m" placeholder="250m" /></Field>
+            <Field label="CPU limit"><Input name="cpu_limit" defaultValue="500m" placeholder="500m" /></Field>
+            <Field label="Memory request"><Input name="memory_request" defaultValue="256Mi" placeholder="256Mi" /></Field>
+            <Field label="Memory limit"><Input name="memory_limit" defaultValue="512Mi" placeholder="512Mi" /></Field>
+            <Field label="Public access"><Select name="public_access" defaultValue="false"><option value="false">Internal Only (Cluster IP)</option><option value="true">Public Ingress (Requires approval in prod)</option></Select></Field>
+            <Field label="Cost center"><Input name="cost_center" defaultValue="cc-platform-042" placeholder="e.g. cc-platform-042" /></Field>
+            <Field label="Data classification"><Select name="data_classification" defaultValue="internal"><option value="public">Public</option><option value="internal">Internal</option><option value="confidential">Confidential (Requires Key Vault)</option><option value="restricted">Restricted (Requires Key Vault)</option></Select></Field>
             <div className="md:col-span-2">
               <Label>Required Azure services</Label>
               <div className="mt-2 grid gap-2 sm:grid-cols-5">
                 {services.map((service) => (
-                  <label key={service} className="rounded-xl border border-cyan-300/15 bg-cyan-300/5 p-3 text-sm text-slate-300 transition hover:border-cyan-300/40">
+                  <label key={service} className="flex items-center gap-2 rounded-md border border-slate-800 bg-slate-900/60 p-2.5 text-xs text-slate-300 transition hover:border-slate-700 cursor-pointer">
                     <input
                       type="checkbox"
-                      className="mr-2"
+                      className="rounded border-slate-700 text-cyan-600 focus:ring-0"
                       checked={selected.includes(service)}
                       onChange={(event) => updateSelectedService(service, event.target.checked)}
                     />
-                    {service}
+                    <span>{service}</span>
                   </label>
                 ))}
               </div>
             </div>
-            <div className="md:col-span-2">
-              <Button type="submit">Generate platform request</Button>
+            <div className="md:col-span-2 pt-2">
+              <Button type="submit">Submit Workload Request</Button>
             </div>
           </form>
         </MissionPanel>
-        <MissionPanel title="What happens next" eyebrow="automated platform actions">
-          <div className="space-y-3 text-sm text-slate-300">
+        <MissionPanel title="Provisioning Pipeline" eyebrow="automated actions">
+          <div className="space-y-2 text-xs text-slate-300">
             {platformSteps.map((step, index) => (
-              <div key={step} className="flex items-center gap-3 rounded-2xl border border-cyan-300/10 bg-black/20 p-3">
+              <div key={step} className="flex items-center gap-2.5 rounded-md border border-slate-800 bg-slate-900/40 p-2.5">
                 <StatusPill tone="info">{String(index + 1).padStart(2, "0")}</StatusPill>
                 <span>{step}</span>
               </div>

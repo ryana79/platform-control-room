@@ -11,15 +11,15 @@ export default function DriftPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Drift Detection</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Desired vs Live State</h1>
-        <p className="mt-2 text-slate-400">Compare generated GitOps manifests against live Kubernetes state and demonstrate manual drift.</p>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Configuration Drift</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Drift Detection</h1>
+        <p className="mt-2 text-sm text-slate-400">Compare desired GitOps declarations against running cluster configurations to detect unauthorized modifications.</p>
       </div>
 
-      <MissionPanel title="Drift Drill" eyebrow="interactive demo">
+      <MissionPanel title="Drift Analysis" eyebrow="cluster comparison">
         <div className="flex flex-wrap gap-3">
-          <Button onClick={() => api.drift().then(setData)}>Run drift check</Button>
-          <Button className="border-amber-200/60 bg-amber-300" onClick={() => api.createDrift().then(setDemo)}>Create demo drift</Button>
+          <Button onClick={() => api.drift().then(setData)}>Run Drift Scan</Button>
+          <Button className="border-amber-500/40 bg-amber-600 hover:bg-amber-500" onClick={() => api.createDrift().then(setDemo)}>Simulate Replica Drift</Button>
         </div>
         {demo && (
           <div className="mt-4">

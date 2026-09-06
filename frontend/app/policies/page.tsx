@@ -21,9 +21,9 @@ export default function PoliciesPage() {
   return (
     <div className="space-y-6 text-slate-100">
       <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan-300/70">Policy Center</div>
-        <h1 className="mt-2 text-4xl font-black tracking-tight">Guardrail Control Room</h1>
-        <p className="mt-2 text-slate-400">Click a control to explain how the platform blocks risky workload requests before deployment.</p>
+        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-400">Policy Governance</div>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-100">Policy Center</h1>
+        <p className="mt-2 text-sm text-slate-400">Enforce architectural guardrails and evaluate compliance before workload manifests reach production.</p>
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[1.1fr_.9fr]">

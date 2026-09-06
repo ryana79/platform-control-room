@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import os
 
 from fastapi import FastAPI
@@ -17,7 +18,18 @@ def allowed_origins() -> list[str]:
     return ["http://localhost:3000", "http://127.0.0.1:3000", *configured_origins]
 
 
-app = FastAPI(title="Platform Control Room API", version="1.0.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    db = SessionLocal()
+    try:
+        seed_demo_data(db)
+    finally:
+        db.close()
+    yield
+
+
+app = FastAPI(title="Platform Control Room API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -26,16 +38,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def startup() -> None:
-    init_db()
-    db = SessionLocal()
-    try:
-        seed_demo_data(db)
-    finally:
-        db.close()
 
 
 @app.get("/health")

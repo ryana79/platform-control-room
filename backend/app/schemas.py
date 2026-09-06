@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 Environment = Literal["dev", "staging", "prod"]
@@ -37,8 +37,7 @@ class WorkloadRead(WorkloadCreate):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class WorkloadDetail(WorkloadRead):
@@ -55,8 +54,7 @@ class ActivityRead(BaseModel):
     severity: str
     created_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 DeploymentType = Literal["resource_group", "storage_account", "linux_vm"]
